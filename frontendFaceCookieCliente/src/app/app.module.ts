@@ -8,6 +8,9 @@ import { BrokerMsgComponent } from './components/broker-msg/broker-msg.component
 import { SubscribeTopicComponent } from './components/subscribe-topic/subscribe-topic.component';
 import { BrokerTopicComponent } from './components/broker-topic/broker-topic.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { PageLoginComponent } from './pages/page-login/page-login.component';
+import { PageSalasComponent } from './pages/page-salas/page-salas.component';
+import { PageSalaJogandoComponent } from './pages/page-sala-jogando/page-sala-jogando.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +18,10 @@ import { ReactiveFormsModule } from '@angular/forms';
     PageMainComponent,
     BrokerMsgComponent,
     SubscribeTopicComponent,
-    BrokerTopicComponent
+    BrokerTopicComponent,
+    PageLoginComponent,
+    PageSalasComponent,
+    PageSalaJogandoComponent
   ],
   imports: [
     ReactiveFormsModule,
