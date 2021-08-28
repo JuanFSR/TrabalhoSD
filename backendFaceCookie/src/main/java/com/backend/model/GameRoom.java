@@ -1,6 +1,5 @@
 package com.backend.model;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -10,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -40,10 +38,6 @@ public class GameRoom {
 	@OneToMany(targetEntity=Player.class, fetch=FetchType.EAGER)
 	@Column(name = "players")
 	private List<Player> players;
-//	
-//	@OneToMany(targetEntity=Match.class, fetch=FetchType.EAGER)
-//	@Column(name = "matches")
-//	private List<Match> matches;
 	
 	@NotNull
 	@Column(name = "have_password")
@@ -51,6 +45,10 @@ public class GameRoom {
 	
 	@Column(name = "password")
 	private String password;
+	
+	@NotNull
+	@Column(name = "is_visible")
+	private boolean isVisible;
 	
 	@OneToOne(targetEntity=Player.class)
 	@JoinColumn(name="winner")
