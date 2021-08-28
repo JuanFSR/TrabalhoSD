@@ -1,17 +1,55 @@
-.login {
+.loginWrapper {
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-content: center;
 
-  .campos {
-      display: flex;
-    //   text-align: center;
-      justify-content: center;
+  .loginContent {
+    background-color: #ffffff;
 
-      input {
-          width: 100%;
+    .card-top {
+      background-color: purple;
+      display: flex;
+      width: 100%;
+      height: 100px;
+    }
+
+    .loginAdmin {
+      display: flex;	
+
+      .formulario {
+        .tituloLogin {
+          padding: 1em;
+          font-size: 1.5em;
+          padding-bottom: 0;
+          text-align: center;
+        }
+
+        .btn-senha {
+          border: none;
+          background-color: white;
+          font-size: small;
+          color: gray;
+          outline: none;
+        }
+
+        .botaoLogar {
+          background-color: purple;
+          color: white;
+          align-items: center;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-content: center;
+          .btn-outline-secondary {
+            width: 146px;
+            
+            }
+        }
       }
+    }
   }
 }
