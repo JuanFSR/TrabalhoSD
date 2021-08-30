@@ -1,0 +1,31 @@
+ # spring.devtools.restart.enable=false
+ spring:
+    
+  devtools:
+    restart:
+      enabled: false
+ 
+ # spring.jackson.mapper.DEFAULT_VIEW_INCLUSION=true
+  jackson:
+    mapper:
+      DEFAULT_VIEW_INCLUSION: true
+    parser:
+      ALLOW_UNQUOTED_FIELD_NAMES: true
+    serialization:
+      INDENT_OUTPUT: true
+      WRITE_DATES_AS_TIMESTAMPS: false
+    deserialization:
+      unwrap-single-value-arrays: true
+      FAIL_ON_IGNORED_PROPERTIES: false
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+      ACCEPT_SINGLE_VALUE_AS_ARRAY: true
+      ACCEPT_EMPTY_STRING_AS_NULL_OBJECT: true
+      UNWRAP_SINGLE_VALUE_ARRAYS: true
+      READ_ENUMS_USING_TO_STRING: true
+    default-property-inclusion: NON_EMPTY
+   
+ ################## [LOGGING] #################
+ logging:
+  level:
+    root: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
