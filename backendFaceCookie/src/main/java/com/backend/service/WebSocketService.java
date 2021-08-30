@@ -9,6 +9,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.NonNull;
 
+/**
+ * 
+ * @author aliss
+ *	Essa classe envia mensagem ao canal socket
+ *	
+ */
 @Service
 public class WebSocketService {
 	

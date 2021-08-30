@@ -1,5 +1,6 @@
 package com.backend.service.dto;
 
+import com.backend.model.enums.TipoNotificacaoEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Builder;
@@ -14,8 +15,8 @@ public class WebSocketDto {
 	@JsonProperty("topico")
 	private String topico;
 	
-	//@JsonProperty("tipo")
-	//private TipoNotificacaoEnum tipo;
+	@JsonProperty("tipo")
+	private TipoNotificacaoEnum tipo;
 	
 	@JsonProperty("payload")
 	private Object payload;

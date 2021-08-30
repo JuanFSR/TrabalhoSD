@@ -15,10 +15,16 @@ import javax.persistence.Table;
 
 import com.sun.istack.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "game_room")
 public class GameRoom {
 	
@@ -38,13 +44,6 @@ public class GameRoom {
 	@OneToMany(targetEntity=Player.class, fetch=FetchType.EAGER)
 	@Column(name = "players")
 	private List<Player> players;
-	
-	@NotNull
-	@Column(name = "have_password")
-	private boolean havePassword;
-	
-	@Column(name = "password")
-	private String password;
 	
 	@NotNull
 	@Column(name = "is_visible")
