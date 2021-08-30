@@ -5,6 +5,20 @@
     restart:
       enabled: false
  
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/facecookie
+    username: postgres
+    password: postgres
+ 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true   
+        
  # spring.jackson.mapper.DEFAULT_VIEW_INCLUSION=true
   jackson:
     mapper:
