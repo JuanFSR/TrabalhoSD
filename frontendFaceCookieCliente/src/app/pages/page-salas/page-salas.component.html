@@ -1,1 +1,26 @@
-<p>page-salas works!</p>
+<div class="main-container">
+    <div class="subscriber">
+        <app-subscribe-topic (topicoEvent)="addTopico($event)"></app-subscribe-topic>
+    </div>
+    <div class="messages">
+
+        <div class="no-topic" *ngIf="!topics || topics.length == 0">
+            Nenhum topico inscrito
+        </div>  
+        
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nome da Sala</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <app-broker-topic *ngFor="let t of topics; let i1 = index" [topic]="t"></app-broker-topic>
+                <td>Mark</td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+</div>
