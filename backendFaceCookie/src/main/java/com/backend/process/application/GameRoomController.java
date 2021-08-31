@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.backend.dto.CreateGameRoomDto;
 import com.backend.dto.CreateGameRoomResponseDto;
-import com.backend.dto.CreatePlayerDto;
-import com.backend.dto.CreatePlayerResponseDto;
+import com.backend.dto.ExitGameRoomDto;
 import com.backend.dto.GetGameRoomReturnDto;
 import com.backend.dto.JoinGameRoomDto;
 import com.backend.service.GameRoomService;
@@ -45,6 +44,15 @@ public class GameRoomController {
 			@Valid @RequestBody JoinGameRoomDto dto) throws Exception {
 		
 		gameRoomService.joinGameRoom(dto, idGameRoom);
+		return ResponseEntity.ok().build();
+	}
+	
+	@PostMapping("/exit/{idGameRoom}")
+	public ResponseEntity<CreateGameRoomResponseDto> exitRoom(
+			@PathVariable(name = "idGameRoom", required = true) Long idGameRoom, 
+			@Valid @RequestBody ExitGameRoomDto dto) throws Exception {
+		
+		gameRoomService.exitGameRoom(dto, idGameRoom);
 		return ResponseEntity.ok().build();
 	}
 }

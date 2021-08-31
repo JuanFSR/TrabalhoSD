@@ -12,7 +12,6 @@ import com.backend.dto.CreatePlayerResponseDto;
 import com.backend.model.Player;
 import com.backend.repository.PlayerRepository;
 
-import javassist.NotFoundException;
 import lombok.NonNull;
 
 @Service

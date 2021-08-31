@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.backend.dto.CreateGameRoomDto;
 import com.backend.dto.CreateGameRoomResponseDto;
-import com.backend.dto.CreatePlayerResponseDto;
+import com.backend.dto.ExitGameRoomDto;
 import com.backend.dto.GetGameRoomReturnDto;
 import com.backend.dto.JoinGameRoomDto;
 import com.backend.model.GameRoom;
@@ -59,12 +59,13 @@ public class GameRoomService {
 						.nome(dto.getNome())
 						.maxPlayers(4)
 						.isVisible(true)
+						.players(players)
 						.build();
 					
 					gameRoomRepository.save(gameRoom);
 					
 					WebSocketDto messageDto = WebSocketDto.builder()
-							.topico("geral")
+							.topico("canal-geral")
 							.payload(gameRoom)
 							.build();
 					
@@ -113,6 +114,8 @@ public class GameRoomService {
 							
 							webSocketService.notifyMessageChannel(messageDto);
 							
+							return;
+							
 						} else {
 							throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sala está cheia");
 						}
@@ -120,6 +123,56 @@ public class GameRoomService {
 					
 				} else {
 					throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Jogador já está em uma partida");
+				}
+			}
+		}
+		
+		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Erro");
+	}
+	
+	public void exitGameRoom(ExitGameRoomDto dto, Long idGameRoom) throws Exception {
+		
+		if (null != dto.getEmail()) {
+			Optional<Player> optPlayer = playerRepository.findByEmail(dto.getEmail());
+			
+			if(optPlayer.isPresent()) {
+				Player player = optPlayer.get();
+				Optional<GameRoom> optGameRoom = gameRoomRepository.findActiveGame(player.getId());
+				
+				if(optGameRoom.isPresent()) {
+					
+					Optional<GameRoom> optGameRoom2 = gameRoomRepository.findById(idGameRoom);
+					
+					if(optGameRoom2.isPresent()) {
+						GameRoom gameRoom = optGameRoom2.get();
+						List<Player> players = gameRoom.getPlayers();
+						
+						if (players.contains(player)) {
+							players.remove(player);
+							
+							if(players.size() == 0) {
+								gameRoom.setVisible(false);
+							}
+							
+							gameRoomRepository.save(gameRoom);
+							
+							WebSocketDto messageDto = WebSocketDto.builder()
+									.topico("game-room-" + String.valueOf(gameRoom.getId()))
+									.tipo(TipoNotificacaoEnum.JOGADOR_SAIU_SALA)
+									.payload(gameRoom)
+									.build();
+							
+							webSocketService.notifyMessageChannel(messageDto);
+							
+							return;
+							
+						} else {
+							throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Jogador não está na partida");
+						}
+					}
+					
+				} else {
+					throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Jogador não está em uma partida");
 				}
 			}
 		}
