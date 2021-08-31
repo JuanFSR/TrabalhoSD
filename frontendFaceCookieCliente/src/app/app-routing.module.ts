@@ -10,7 +10,7 @@ import { PageSalasComponent } from './pages/page-salas/page-salas.component';
 const routes: Routes = [
   { path: '', redirectTo: '/main', pathMatch: 'full' },
   { path: 'main', component: PageLoginComponent },
-  { path: '**', redirectTo: '' },
+  // { path: '**', redirectTo: '' },
   {path: 'salas', component: PageSalasComponent}
 ];
 

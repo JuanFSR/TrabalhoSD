@@ -1,6 +1,7 @@
 <div class="main-container">
     <div class="subscriber">
-        <app-subscribe-topic (topicoEvent)="addTopico($event)"></app-subscribe-topic>
+        <!-- <app-subscribe-topic (topicoEvent)="addTopico($event)"></app-subscribe-topic>-->
+        <app-top-bar></app-top-bar>
     </div>
     <div class="messages">
 
@@ -18,7 +19,6 @@
             <tbody>
                 <tr>
                   <app-broker-topic *ngFor="let t of topics; let i1 = index" [topic]="t"></app-broker-topic>
-                <td>Mark</td>
               </tr>
             </tbody>
           </table>
