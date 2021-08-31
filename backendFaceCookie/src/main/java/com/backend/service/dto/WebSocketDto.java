@@ -7,6 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
+/**
+ * 
+ * @author alisson e juan
+ * Esta classe é a responsável por definir o formato de comunicação
+ * entre o socket.
+ *
+ */
 @Data
 @Builder
 @ToString
