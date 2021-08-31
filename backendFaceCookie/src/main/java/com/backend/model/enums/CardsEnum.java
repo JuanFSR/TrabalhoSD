@@ -7,6 +7,8 @@ public enum CardsEnum {
 	
 	PEDRA, 
 	PAPEL, 
-	TESOURA
+	TESOURA,
+	AGUA,
+	FOGO
 	;
 }

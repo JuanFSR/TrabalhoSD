@@ -16,6 +16,7 @@ import com.backend.dto.CreateGameRoomResponseDto;
 import com.backend.dto.ExitGameRoomDto;
 import com.backend.dto.GetGameRoomReturnDto;
 import com.backend.dto.JoinGameRoomDto;
+import com.backend.dto.PlayGameRoomDto;
 import com.backend.service.GameRoomService;
 
 @Controller
@@ -39,7 +40,7 @@ public class GameRoomController {
 	}
 	
 	@PostMapping("/join/{idGameRoom}")
-	public ResponseEntity<CreateGameRoomResponseDto> joinRoom(
+	public ResponseEntity<?> joinRoom(
 			@PathVariable(name = "idGameRoom", required = true) Long idGameRoom, 
 			@Valid @RequestBody JoinGameRoomDto dto) throws Exception {
 		
@@ -48,11 +49,28 @@ public class GameRoomController {
 	}
 	
 	@PostMapping("/exit/{idGameRoom}")
-	public ResponseEntity<CreateGameRoomResponseDto> exitRoom(
+	public ResponseEntity<?> exitRoom(
 			@PathVariable(name = "idGameRoom", required = true) Long idGameRoom, 
 			@Valid @RequestBody ExitGameRoomDto dto) throws Exception {
 		
 		gameRoomService.exitGameRoom(dto, idGameRoom);
+		return ResponseEntity.ok().build();
+	}
+	
+	@PostMapping("/play/{idGameRoom}")
+	public ResponseEntity<?> playRoom(
+			@PathVariable(name = "idGameRoom", required = true) Long idGameRoom, 
+			@Valid @RequestBody PlayGameRoomDto dto) throws Exception {
+		
+		gameRoomService.playGameRoom(dto, idGameRoom);
+		return ResponseEntity.ok().build();
+	}
+	
+	@PostMapping("/result/{idGameRoom}")
+	public ResponseEntity<?> resultGameRoom(
+			@PathVariable(name = "idGameRoom", required = true) Long idGameRoom) throws Exception {
+		
+		gameRoomService.consultWinnerGameRoom(idGameRoom);
 		return ResponseEntity.ok().build();
 	}
 }

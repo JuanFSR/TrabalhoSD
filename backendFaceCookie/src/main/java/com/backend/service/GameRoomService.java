@@ -14,15 +14,28 @@ import com.backend.dto.CreateGameRoomResponseDto;
 import com.backend.dto.ExitGameRoomDto;
 import com.backend.dto.GetGameRoomReturnDto;
 import com.backend.dto.JoinGameRoomDto;
+import com.backend.dto.PlayGameRoomDto;
 import com.backend.model.GameRoom;
+import com.backend.model.Match;
 import com.backend.model.Player;
+import com.backend.model.enums.CardsEnum;
 import com.backend.model.enums.TipoNotificacaoEnum;
 import com.backend.repository.GameRoomRepository;
+import com.backend.repository.MatchRepository;
 import com.backend.repository.PlayerRepository;
 import com.backend.service.dto.WebSocketDto;
 
 @Service
 public class GameRoomService {
+	
+	private int arrayGame[][] = {
+			{2, 1, 0, 1, 0, 2}, 
+			{0, 2, 1, 1, 1, 2}, 
+			{1, 0, 2, 2, 1, 2}, 
+			{0, 0, 2, 2, 0, 0}, 
+			{0, 0, 0, 1, 2, 1},
+			{2, 2, 2, 1, 0, 2}
+	};
 	
 	@Autowired
 	GameRoomRepository gameRoomRepository;
@@ -32,6 +45,9 @@ public class GameRoomService {
 	
 	@Autowired
 	WebSocketService webSocketService;
+	
+	@Autowired
+	MatchRepository matchRepository;
 	
 	public GetGameRoomReturnDto getAll() {
 		List<GameRoom> listGameRoom = gameRoomRepository.findAllVisible();
@@ -178,5 +194,158 @@ public class GameRoomService {
 		}
 		
 		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Erro");
+	}
+	
+	public void playGameRoom(PlayGameRoomDto dto, Long idGameRoom) throws Exception {
+		
+		if (null != dto.getEmail()) {
+			Optional<Player> optPlayer = playerRepository.findByEmail(dto.getEmail());
+			
+			if(optPlayer.isPresent()) {
+				Player player = optPlayer.get();
+				Optional<GameRoom> optGameRoom = gameRoomRepository.findActiveGame(player.getId());
+				
+				if(optGameRoom.isPresent()) {
+					GameRoom gameRoom = optGameRoom.get();
+					List<Player> players = gameRoom.getPlayers();
+					
+					if(players.contains(player)) {
+						Optional<Match> optMatch = matchRepository.findMatch(player.getId(), gameRoom.getId());
+						Match match = null;
+						
+						if(optMatch.isPresent() && null != optMatch.get().getMove()) {
+							
+							throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Jogador já jogou");
+							
+						} else if (optMatch.isPresent() && null == optMatch.get().getMove()) {
+							match = optMatch.get();
+							match.setMove(dto.getMove());
+							
+							
+						} else {
+							match = Match.builder()
+									.gameRoom(gameRoom)
+									.player(player)
+									.move(dto.getMove())
+									.build();
+							
+						}
+						
+						WebSocketDto messageDto = WebSocketDto.builder()
+								.topico("game-room-" + String.valueOf(gameRoom.getId()))
+								.tipo(TipoNotificacaoEnum.JOGADOR_JOGOU)
+								.payload(gameRoom)
+								.build();
+						
+						webSocketService.notifyMessageChannel(messageDto);
+						
+						matchRepository.save(match);
+						return;
+						
+					}
+					
+				}
+			
+				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Jogador não está na partida");
+				
+			}
+		}
+		
+		throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Erro");
+	}
+
+	public int consultWinner(int index1, int index2, List<Match> matches) {
+		int value = arrayGame[matches.get(index1).getMove().ordinal()][matches.get(index2).getMove().ordinal()];
+		
+		if (value == 0) {
+			return index2;
+		} else if (value == 1) {
+			return index1;
+		}
+		
+		return -1;
+	}
+	
+	public void consultWinnerGameRoom(Long idGameRoom) throws Exception {
+		Optional<GameRoom> optGameRoom = gameRoomRepository.findById(idGameRoom);
+		
+		if(optGameRoom.isPresent()) {
+			GameRoom gameRoom = optGameRoom.get();
+			
+			if(gameRoom.isVisible()) {
+				List<Match> matches = matchRepository.findByGameRoomId(gameRoom.getId());
+				
+				if(matches.size() == gameRoom.getMaxPlayers()) {
+					int winner = -1;
+					CardsEnum result1 = matches.get(0).getMove();
+					CardsEnum result2 = matches.get(1).getMove();
+					CardsEnum result3 = matches.get(2).getMove();
+					CardsEnum result4 = matches.get(3).getMove();
+					
+					if (result1.equals(result2)) {
+						winner = consultWinner(2, 3, matches);
+					} else if (result1.equals(result3)) {
+						winner = consultWinner(2, 4, matches);
+					} else if (result1.equals(result4)) {
+						winner = consultWinner(2, 3, matches);						
+					} else if (result2.equals(result3)) {
+						winner = consultWinner(1, 4, matches);						
+					} else if (result2.equals(result4)) {
+						winner = consultWinner(1, 3, matches);						
+					} else if (result3.equals(result4)) {
+						winner = consultWinner(1, 2, matches);						
+					} 
+					
+					WebSocketDto messageGeralDto;
+					WebSocketDto messageWinnerDto;
+					gameRoom.setVisible(false);
+
+					if (winner == -1) {
+						gameRoom.setWinner(null);
+						
+						messageGeralDto = WebSocketDto.builder()
+								.topico("game-room-" + String.valueOf(gameRoom.getId()))
+								.tipo(TipoNotificacaoEnum.RESULTADO)
+								.payload(0)
+								.build();
+					} else {
+						Player PlayerWinner = matches.get(winner).getPlayer();
+						gameRoom.setWinner(PlayerWinner);
+						
+						messageWinnerDto = WebSocketDto.builder()
+								.topico(PlayerWinner.getEmail())
+								.tipo(TipoNotificacaoEnum.RESULTADO)
+								.payload(1)
+								.build();
+						
+						webSocketService.notifyMessageChannel(messageWinnerDto);
+						
+						messageGeralDto = WebSocketDto.builder()
+								.topico("game-room-" + String.valueOf(gameRoom.getId()))
+								.tipo(TipoNotificacaoEnum.RESULTADO)
+								.payload(1)
+								.build();
+						
+					}
+					
+					gameRoomRepository.save(gameRoom);
+					
+					webSocketService.notifyMessageChannel(messageGeralDto);
+						
+					
+					
+					return;
+					
+				} else {
+					throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Ainda faltam jogadores para jogar");
+				}
+				
+			} else {
+				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sala já finalizada");
+			}
+			
+		} else {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sala não encontrada");
+		}
 	}
 }

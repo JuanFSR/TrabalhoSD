@@ -38,6 +38,4 @@ public class Player {
 	@Column(name = "email")
 	private String email;
 	
-	@ManyToMany
-	private List<Match> matche;
 }
