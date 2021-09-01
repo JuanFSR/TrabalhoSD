@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EventSocket, EventTypes } from '@app/model/event.model';
 import { AuthService } from '@app/service/auth.service';
@@ -14,8 +15,10 @@ import Cookies from 'js-cookie';
 export class PageSalasComponent implements OnInit {
   topics: Array<any>;
   email: string = '';
+  formSala: FormGroup;
 
   constructor(
+    private formBuilder: FormBuilder,
     private socketService: SocketClientService,
     private serviceBackend: BackendServiceService,
     private router: Router,
@@ -36,6 +39,10 @@ export class PageSalasComponent implements OnInit {
           this.getSala();
         }) 
     }, 5 * 1000);
+
+    this.formSala = this.formBuilder.group({
+      nomeSala: [''],
+    });
   }
   
   ngOnInit(): void {

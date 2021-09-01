@@ -13,8 +13,10 @@ const routes: Routes = [
   { path: '', redirectTo: 'main', pathMatch: 'full' },
   { path: 'main', component: PageLoginComponent, },
   // { path: '**', redirectTo: '' },
-  {path: 'salas', component: PageSalasComponent, 
-  canActivate: [AuthGuardService]},
+  // {path: 'salas', component: PageSalasComponent, 
+  // canActivate: [AuthGuardService]},
+
+  {path: 'salas', component: PageSalasComponent},
   {path: 'jogos', component: PageSalaJogandoComponent}
 ];
 

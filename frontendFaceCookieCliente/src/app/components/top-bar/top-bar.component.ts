@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-top-bar',
@@ -6,14 +7,24 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./top-bar.component.scss']
 })
 export class TopBarComponent implements OnInit {
-
-  constructor() { }
+  formSala: FormGroup;
+  
+  constructor(
+    private formBuilder: FormBuilder,
+  ) { 
+    this.formSala = this.formBuilder.group({
+      nomeSala: [''],
+    });
+  }
 
   ngOnInit(): void {
   }
 
   newSala() {
     
+  }
+  recuperarSenha() {
+
   }
 
 }
