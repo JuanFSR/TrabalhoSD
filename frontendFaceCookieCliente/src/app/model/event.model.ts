@@ -1,8 +1,10 @@
 export namespace EventTypes {
     export enum Enum {
-        ASSISTIDO_PROXIMO_ATENDIMENTO,
-	    ASSISTIDO_DECREMENTAR_POSICAO,
-        ASSISTIDO_QUANTIDADE_MEDICO_ONLINE,
+        SALA_CRIADA,
+        JOGADOR_ENTROU_SALA,
+        JOGADOR_SAIU_SALA,
+        JOGADOR_JOGOU,
+        RESULTADO
     }
 
 }   

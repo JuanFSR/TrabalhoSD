@@ -18,8 +18,13 @@
             </thead>
             <tbody>
                 <tr>
-                  <a (click)="entraSala()"><app-broker-topic *ngFor="let t of topics; let i1 = index" [topic]="t"></app-broker-topic></a>
-              </tr>
+                  <!-- <a (click)="entraSala()"><app-broker-topic *ngFor="let t of topics; let i1 = index" [topic]="t"></app-broker-topic></a> -->
+                    <div *ngFor="let t of topics; let i1 = index" >
+                        <a (click)="entraSala(t.id)">
+                        <div class="header">{{t.nome}}</div>
+                    </a>
+                    </div>
+                </tr>
             </tbody>
           </table>
     </div>

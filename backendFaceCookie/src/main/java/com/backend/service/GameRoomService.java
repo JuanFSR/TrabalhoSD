@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.backend.dto.CreateGameRoomDto;
 import com.backend.dto.CreateGameRoomResponseDto;
 import com.backend.dto.ExitGameRoomDto;
+import com.backend.dto.GameRoomDto;
 import com.backend.dto.GetGameRoomReturnDto;
 import com.backend.dto.JoinGameRoomDto;
 import com.backend.dto.PlayGameRoomDto;
@@ -51,9 +52,19 @@ public class GameRoomService {
 	
 	public GetGameRoomReturnDto getAll() {
 		List<GameRoom> listGameRoom = gameRoomRepository.findAllVisible();
+		List<GameRoomDto> listGameRoomDto = new ArrayList<>();
+		
+		for (GameRoom gameRoom : listGameRoom) {
+			GameRoomDto gameRoomDto = GameRoomDto.builder()
+					.id(gameRoom.getId())
+					.nome(gameRoom.getNome())
+					.build();
+			
+			listGameRoomDto.add(gameRoomDto);
+		}
 		
 		return GetGameRoomReturnDto.builder()
-				.gameRoomList(listGameRoom)
+				.gameRoomDto(listGameRoomDto)
 				.quantity(listGameRoom.size())
 				.build();
 	}
@@ -82,7 +93,7 @@ public class GameRoomService {
 					
 					WebSocketDto messageDto = WebSocketDto.builder()
 							.topico("canal-geral")
-							.payload(gameRoom)
+							.tipo(TipoNotificacaoEnum.SALA_CRIADA)
 							.build();
 					
 					webSocketService.notifyMessageChannel(messageDto);
@@ -125,7 +136,6 @@ public class GameRoomService {
 							WebSocketDto messageDto = WebSocketDto.builder()
 									.topico("game-room-" + String.valueOf(gameRoom.getId()))
 									.tipo(TipoNotificacaoEnum.JOGADOR_ENTROU_SALA)
-									.payload(gameRoom)
 									.build();
 							
 							webSocketService.notifyMessageChannel(messageDto);
@@ -166,17 +176,23 @@ public class GameRoomService {
 						if (players.contains(player)) {
 							players.remove(player);
 							
+							WebSocketDto messageDto;
+							
 							if(players.size() == 0) {
 								gameRoom.setVisible(false);
+								
+								messageDto = WebSocketDto.builder()
+										.topico("canal-geral")
+										.tipo(TipoNotificacaoEnum.SALA_CRIADA)
+										.build();
+							} else {
+								messageDto = WebSocketDto.builder()
+										.topico("game-room-" + String.valueOf(gameRoom.getId()))
+										.tipo(TipoNotificacaoEnum.JOGADOR_SAIU_SALA)
+										.build();
 							}
 							
 							gameRoomRepository.save(gameRoom);
-							
-							WebSocketDto messageDto = WebSocketDto.builder()
-									.topico("game-room-" + String.valueOf(gameRoom.getId()))
-									.tipo(TipoNotificacaoEnum.JOGADOR_SAIU_SALA)
-									.payload(gameRoom)
-									.build();
 							
 							webSocketService.notifyMessageChannel(messageDto);
 							

@@ -1,8 +1,5 @@
 package com.backend.dto;
 
-import java.util.List;
-
-import com.backend.model.GameRoom;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -10,15 +7,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetGameRoomReturnDto {
+public class GameRoomDto {
+    
+	@JsonProperty("id")
+    Long id;
 	
-	@JsonProperty("quantity")
-	int quantity;
-	
-	@JsonProperty("list")
-	List<GameRoomDto> gameRoomDto;
+	@JsonProperty("nome")
+	String nome;
 }

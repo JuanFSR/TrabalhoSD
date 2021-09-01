@@ -5,6 +5,7 @@ import { SocketClientService } from '@app/service/socket-client.service';
 import { AuthGuardService } from '@app/guards/auth-guard.service';
 import { BackendServiceService } from '@app/service/backend-service.service';
 import Cookies from 'js-cookie';
+import { AuthService } from '@app/service/auth.service';
 @Component({
   selector: 'app-page-login',
   templateUrl: './page-login.component.html',
@@ -22,6 +23,7 @@ export class PageLoginComponent implements OnInit {
     private serviceBackend: BackendServiceService,
     private router: Router,
     private auth: AuthGuardService,
+    private authService: AuthService
 
   ) { 
     this.formLogin = this.formBuilder.group({
@@ -44,7 +46,7 @@ export class PageLoginComponent implements OnInit {
       this.auth.usuarioAutenticado = true;
     }
     const formObjeto = this.formLogin.getRawValue();
-    Cookies.set('emailLogin', formObjeto.email);
+    this.authService.setEmail(formObjeto.email);
     console.log(formObjeto.email)
     console.log(formObjeto.username)
     

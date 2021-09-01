@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 
@@ -6,6 +6,8 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class BackendServiceService {
+
+  corsHeaders: any;
 
   constructor(
     private http: HttpClient,
@@ -19,7 +21,8 @@ export class BackendServiceService {
     }
     json.name = name;
     json.email = email;
-    return this.http.post<any>('127.168.0.1:8080/player/create', json).pipe(
+
+    return this.http.post<any>('http://127.168.0.1:8080/player/create', json).pipe(
       map(( data => {
         return data;
       }))
@@ -27,7 +30,59 @@ export class BackendServiceService {
   }
 
   getSala() {
-    return this.http.get<any>('127.168.0.1:8080/game-room/').pipe(
+    return this.http.get<any>('http://127.168.0.1:8080/game-room/').pipe(
+      map(( data => {
+        return data;
+      }))
+    )
+  }
+
+  joinSala(id: number, email: string) {
+    let json = {
+      email: ''
+    }
+
+    json.email = email;
+
+    return this.http.post<any>('http://127.168.0.1:8080/game-room/join/' + id, json).pipe(
+      map(( data => {
+        return data;
+      }))
+    )
+  }
+
+  exitSala(id: number, email: string) {
+    let json = {
+      email: ''
+    }
+
+    json.email = email;
+
+    return this.http.post<any>('http://127.168.0.1:8080/game-room/exit/' + id, json).pipe(
+      map(( data => {
+        return data;
+      }))
+    )
+  }
+
+  playSala(id: number, email: string, move: number) {
+    let json = {
+      email: '',
+      move: -1
+    }
+
+    json.email = email;
+    json.move = move;
+
+    return this.http.post<any>('http://127.168.0.1:8080/game-room/play/' + id, json).pipe(
+      map(( data => {
+        return data;
+      }))
+    )
+  }
+
+  resultSala(id: number) {
+    return this.http.get<any>('http://127.168.0.1:8080/game-room/result/' + id).pipe(
       map(( data => {
         return data;
       }))
