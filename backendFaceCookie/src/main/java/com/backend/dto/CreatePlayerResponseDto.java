@@ -1,6 +1,5 @@
 package com.backend.dto;
 
-import com.backend.model.GameRoom;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -12,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateGameRoomResponseDto {
+public class CreatePlayerResponseDto {
     
-	@JsonProperty("game-room")
-    GameRoom gameRoom;
+	@JsonProperty("response")
+    String response;
 }
