@@ -18,7 +18,7 @@
             </thead>
             <tbody>
                 <tr>
-                  <app-broker-topic *ngFor="let t of topics; let i1 = index" [topic]="t"></app-broker-topic>
+                  <a (click)="entraSala()"><app-broker-topic *ngFor="let t of topics; let i1 = index" [topic]="t"></app-broker-topic></a>
               </tr>
             </tbody>
           </table>

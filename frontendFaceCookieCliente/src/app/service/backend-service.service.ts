@@ -25,4 +25,13 @@ export class BackendServiceService {
       }))
     )
   }
+
+  getSala() {
+    return this.http.get<any>('127.168.0.1:8080/game-room/').pipe(
+      map(( data => {
+        return data;
+      }))
+    )
+  }
+
 }

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { SocketClientService } from '@app/service/socket-client.service';
 import { AuthGuardService } from '@app/guards/auth-guard.service';
 import { BackendServiceService } from '@app/service/backend-service.service';
-
+import Cookies from 'js-cookie';
 @Component({
   selector: 'app-page-login',
   templateUrl: './page-login.component.html',
@@ -44,7 +44,7 @@ export class PageLoginComponent implements OnInit {
       this.auth.usuarioAutenticado = true;
     }
     const formObjeto = this.formLogin.getRawValue();
-
+    Cookies.set('emailLogin', formObjeto.email);
     console.log(formObjeto.email)
     console.log(formObjeto.username)
     
