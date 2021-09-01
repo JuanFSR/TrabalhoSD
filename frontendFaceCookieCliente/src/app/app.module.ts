@@ -25,7 +25,7 @@ import { SalaComponentListaComponent } from './components/sala-component-lista/s
     PageSalasComponent,
     PageSalaJogandoComponent,
     TopBarComponent,
-    SalaComponentListaComponent
+    SalaComponentListaComponent,
   ],
   imports: [
     ReactiveFormsModule,
