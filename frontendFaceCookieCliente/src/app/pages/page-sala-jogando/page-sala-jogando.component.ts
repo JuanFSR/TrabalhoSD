@@ -4,7 +4,6 @@ import { EventSocket, EventTypes } from '@app/model/event.model';
 import { AuthService } from '@app/service/auth.service';
 import { BackendServiceService } from '@app/service/backend-service.service';
 import { SocketClientService } from '@app/service/socket-client.service';
-import Cookies from 'js-cookie';
 
 @Component({
   selector: 'app-page-sala-jogando',

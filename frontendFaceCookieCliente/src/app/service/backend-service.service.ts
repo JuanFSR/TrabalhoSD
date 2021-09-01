@@ -97,4 +97,20 @@ export class BackendServiceService {
     )
   }
 
+  createSala(nome: string, email: string) {
+    let json = {
+      nome: '',
+      email: ''
+    }
+
+    json.nome = nome;
+    json.email = email;
+
+    return this.http.post<any>('http://127.168.0.1:8080/game-room/create/', json).pipe(
+      map(( data => {
+        return data;
+      }))
+    )
+  }
+
 }

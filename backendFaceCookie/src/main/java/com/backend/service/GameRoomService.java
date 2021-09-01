@@ -99,7 +99,7 @@ public class GameRoomService {
 					webSocketService.notifyMessageChannel(messageDto);
 					
 					return CreateGameRoomResponseDto.builder()
-							.gameRoom(gameRoom)
+							.id(gameRoom.getId())
 							.build();
 					
 				} else {
@@ -126,25 +126,28 @@ public class GameRoomService {
 					
 					if(optGameRoom2.isPresent()) {
 						GameRoom gameRoom = optGameRoom2.get();
-						List<Player> players = gameRoom.getPlayers();
 						
-						if (players.size() < gameRoom.getMaxPlayers()) {
-							players.add(player);
+						if(gameRoom.isVisible()) {
+							List<Player> players = gameRoom.getPlayers();
 							
-							gameRoomRepository.save(gameRoom);
-							
-							WebSocketDto messageDto = WebSocketDto.builder()
-									.topico("game-room-" + String.valueOf(gameRoom.getId()))
-									.tipo(TipoNotificacaoEnum.JOGADOR_ENTROU_SALA)
-									.payload(players.size())
-									.build();
-							
-							webSocketService.notifyMessageChannel(messageDto);
-							
-							return;
-							
-						} else {
-							throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sala está cheia");
+							if (players.size() < gameRoom.getMaxPlayers()) {
+								players.add(player);
+								
+								gameRoomRepository.save(gameRoom);
+								
+								WebSocketDto messageDto = WebSocketDto.builder()
+										.topico("game-room-" + String.valueOf(gameRoom.getId()))
+										.tipo(TipoNotificacaoEnum.JOGADOR_ENTROU_SALA)
+										.payload(players.size())
+										.build();
+								
+								webSocketService.notifyMessageChannel(messageDto);
+								
+								return;
+								
+							} else {
+								throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sala está cheia");
+							}
 						}
 					}
 					
