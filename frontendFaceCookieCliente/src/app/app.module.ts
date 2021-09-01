@@ -13,6 +13,8 @@ import { PageSalasComponent } from './pages/page-salas/page-salas.component';
 import { PageSalaJogandoComponent } from './pages/page-sala-jogando/page-sala-jogando.component';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
 import { SalaComponentListaComponent } from './components/sala-component-lista/sala-component-lista.component';
+import { AuthGuardService } from './guards/auth-guard.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -30,9 +32,10 @@ import { SalaComponentListaComponent } from './components/sala-component-lista/s
   imports: [
     ReactiveFormsModule,
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [PageLoginComponent, AuthGuardService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
