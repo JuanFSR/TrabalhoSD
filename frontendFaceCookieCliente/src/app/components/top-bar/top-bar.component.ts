@@ -23,8 +23,8 @@ export class TopBarComponent implements OnInit {
   newSala() {
     
   }
-  recuperarSenha() {
-
+  enviaNomeSala() {
+    const formObjeto = this.formSala.getRawValue();
   }
 
 }
