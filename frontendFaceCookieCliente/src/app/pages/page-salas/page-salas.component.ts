@@ -15,7 +15,6 @@ import Cookies from 'js-cookie';
 export class PageSalasComponent implements OnInit {
   topics: Array<any>;
   email: string = '';
-  formSala: FormGroup;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -39,10 +38,6 @@ export class PageSalasComponent implements OnInit {
           this.getSala();
         }) 
     }, 5 * 1000);
-
-    this.formSala = this.formBuilder.group({
-      nomeSala: [''],
-    });
   }
   
   ngOnInit(): void {
