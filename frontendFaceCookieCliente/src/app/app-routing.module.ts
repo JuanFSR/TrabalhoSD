@@ -15,6 +15,7 @@ const routes: Routes = [
   // { path: '**', redirectTo: '' },
   {path: 'salas', component: PageSalasComponent, 
   canActivate: [AuthGuardService]},
+
   {path: 'jogos', component: PageSalaJogandoComponent}
 ];
 
