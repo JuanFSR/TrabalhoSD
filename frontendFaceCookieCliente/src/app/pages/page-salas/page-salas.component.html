@@ -1,0 +1,26 @@
+<div class="main-container">
+    <div class="subscriber">
+        <!-- <app-subscribe-topic (topicoEvent)="addTopico($event)"></app-subscribe-topic>-->
+        <app-top-bar></app-top-bar>
+    </div>
+    <div class="messages">
+
+        <div class="no-topic" *ngIf="!topics || topics.length == 0">
+            Nenhum topico inscrito
+        </div>  
+        
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Nome da Sala</th>
+                    <!-- <th scope="col">#</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                  <a (click)="entraSala()"><app-broker-topic *ngFor="let t of topics; let i1 = index" [topic]="t"></app-broker-topic></a>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+</div>
