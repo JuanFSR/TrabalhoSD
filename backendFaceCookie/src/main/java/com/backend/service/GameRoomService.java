@@ -136,6 +136,7 @@ public class GameRoomService {
 							WebSocketDto messageDto = WebSocketDto.builder()
 									.topico("game-room-" + String.valueOf(gameRoom.getId()))
 									.tipo(TipoNotificacaoEnum.JOGADOR_ENTROU_SALA)
+									.payload(players.size())
 									.build();
 							
 							webSocketService.notifyMessageChannel(messageDto);
@@ -189,6 +190,7 @@ public class GameRoomService {
 								messageDto = WebSocketDto.builder()
 										.topico("game-room-" + String.valueOf(gameRoom.getId()))
 										.tipo(TipoNotificacaoEnum.JOGADOR_SAIU_SALA)
+										.payload(players.size())
 										.build();
 							}
 							
@@ -362,6 +364,23 @@ public class GameRoomService {
 			
 		} else {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sala não encontrada");
+		}
+	}
+	
+	public void initGameRoom(Long idGameRoom) throws Exception {
+		Optional<GameRoom> optGameRoom = gameRoomRepository.findById(idGameRoom);
+		
+		if(optGameRoom.isPresent()) {
+			GameRoom gameRoom = optGameRoom.get();
+			
+			if(gameRoom.isVisible()) {
+				WebSocketDto messagelDto = WebSocketDto.builder()
+						.topico("game-room-" + String.valueOf(gameRoom.getId()))
+						.tipo(TipoNotificacaoEnum.JOGO_INICIOU)
+						.build();
+				
+				webSocketService.notifyMessageChannel(messagelDto);
+			}
 		}
 	}
 }

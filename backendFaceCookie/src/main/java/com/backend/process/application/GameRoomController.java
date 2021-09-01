@@ -80,4 +80,13 @@ public class GameRoomController {
 		gameRoomService.consultWinnerGameRoom(idGameRoom);
 		return ResponseEntity.ok().build();
 	}
+	
+	@CrossOrigin(origins = "http://localhost:4200")
+	@GetMapping("/init/{idGameRoom}")
+	public ResponseEntity<?> initGameRoom(
+			@PathVariable(name = "idGameRoom", required = true) Long idGameRoom) throws Exception {
+		
+		gameRoomService.initGameRoom(idGameRoom);
+		return ResponseEntity.ok().build();
+	}
 }

@@ -16,7 +16,9 @@ export class PageSalaJogandoComponent implements OnInit {
   statusBotao: boolean = false;
   email: string = '';
   id: number = 0;
-  qntdPlayers: number = 0;
+  qntdPlayers: number = 1;
+  qntdMax: number = 4;
+  initGame: boolean = false;
   qntdJogadas: number = 0;
 
   constructor(
@@ -36,19 +38,35 @@ export class PageSalaJogandoComponent implements OnInit {
     this.socketService
         .onEvent(EventTypes.Enum.JOGADOR_ENTROU_SALA)
         .subscribe((event: EventSocket<any>) => {
-          this.qntdPlayers += 1;
+          this.qntdPlayers = ((event as unknown) as number);
+          
+          console.log(this.qntdPlayers, this.qntdMax);
+          if(this.qntdPlayers == this.qntdMax){
+            this.iniciarjogo();
+          }
         }) 
 
     this.socketService
         .onEvent(EventTypes.Enum.JOGADOR_SAIU_SALA)
         .subscribe((event: EventSocket<any>) => {
-          this.qntdPlayers -= 1;
+
+          if(this.initGame){
+            this.sairSala();
+          }
+
+          this.qntdPlayers = (event.payload as number);
         }) 
 
     this.socketService
         .onEvent(EventTypes.Enum.JOGADOR_JOGOU)
         .subscribe((event: EventSocket<any>) => {
           this.qntdJogadas += 1;
+        }) 
+
+    this.socketService
+        .onEvent(EventTypes.Enum.JOGO_INICIOU)
+        .subscribe((event: EventSocket<any>) => {
+          this.initGame = true;
         }) 
 
   }
@@ -79,6 +97,10 @@ export class PageSalaJogandoComponent implements OnInit {
     this.jogada = 3;
   }
 
+  iniciarjogo(){
+    this.backendService.initSala(this.id).subscribe(() => {});
+  }
+
   sairSala() {
     this.backendService.exitSala(this.id, this.email).subscribe(
       (data) => {
@@ -95,7 +117,7 @@ export class PageSalaJogandoComponent implements OnInit {
 
   enviaJogada() {
     // Depois de jogar eu desabilito o botão
-    if(this.jogada != -1){
+    if(this.jogada != -1 && this.initGame){
       this.backendService.playSala(this.id, this.email, this.jogada).subscribe(
         (data) => {
           console.log('jogada enviada');
@@ -104,6 +126,8 @@ export class PageSalaJogandoComponent implements OnInit {
           console.log('error: ', error)
         }
       )
+    } else {
+      console.log('jogo nao iniciou')
     }
   }
 }

@@ -81,6 +81,14 @@ export class BackendServiceService {
     )
   }
 
+  initSala(id: number) {
+    return this.http.get<any>('http://127.168.0.1:8080/game-room/init/' + id).pipe(
+      map(( data => {
+        return data;
+      }))
+    )
+  }
+
   resultSala(id: number) {
     return this.http.get<any>('http://127.168.0.1:8080/game-room/result/' + id).pipe(
       map(( data => {
