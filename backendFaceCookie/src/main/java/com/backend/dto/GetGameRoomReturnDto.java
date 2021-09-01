@@ -19,6 +19,6 @@ public class GetGameRoomReturnDto {
 	@JsonProperty("quantity")
 	int quantity;
 	
-	@JsonProperty("game-room-list")
-	List<GameRoom> gameRoomList;
+	@JsonProperty("list")
+	List<GameRoomDto> gameRoomDto;
 }

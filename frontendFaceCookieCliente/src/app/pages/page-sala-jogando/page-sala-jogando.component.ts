@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { EventSocket, EventTypes } from '@app/model/event.model';
+import { AuthService } from '@app/service/auth.service';
+import { BackendServiceService } from '@app/service/backend-service.service';
 import { SocketClientService } from '@app/service/socket-client.service';
+import Cookies from 'js-cookie';
 
 @Component({
   selector: 'app-page-sala-jogando',
@@ -10,40 +14,96 @@ import { SocketClientService } from '@app/service/socket-client.service';
 export class PageSalaJogandoComponent implements OnInit {
   jogada: number = -1;
   statusBotao: boolean = false;
+  email: string = '';
+  id: number = 0;
+  qntdPlayers: number = 0;
+  qntdJogadas: number = 0;
+
   constructor(
     private router: Router,
     private socketService: SocketClientService,
+    private backendService: BackendServiceService,
+    private authService: AuthService,
   ) { }
 
   ngOnInit(): void {
+    this.email = this.authService.getEmail();
+    this.id = this.authService.getId();
+
+    this.socketService.createSubscription("game-room-" + this.id);
+    this.socketService.createSubscription(this.email);
+
+    this.socketService
+        .onEvent(EventTypes.Enum.JOGADOR_ENTROU_SALA)
+        .subscribe((event: EventSocket<any>) => {
+          this.qntdPlayers += 1;
+        }) 
+
+    this.socketService
+        .onEvent(EventTypes.Enum.JOGADOR_SAIU_SALA)
+        .subscribe((event: EventSocket<any>) => {
+          this.qntdPlayers -= 1;
+        }) 
+
+    this.socketService
+        .onEvent(EventTypes.Enum.JOGADOR_JOGOU)
+        .subscribe((event: EventSocket<any>) => {
+          this.qntdJogadas += 1;
+        }) 
+
+  }
+
+  verificarGanhador(){
+    if(this.qntdJogadas == this.qntdPlayers) {
+      this.backendService.resultSala(this.id).subscribe(() => {});
+    }
   }
 
   fogo() {
-    console.log("Fogoo")
+    this.jogada = 4;
   }
 
   tesoura() {
-    console.log("Tesoura")
+    this.jogada = 2;
   }
 
   papel() {
-    console.log("Papel")
+    this.jogada = 1;
   }
 
   pedra() {
-    console.log("Pedra")
+    this.jogada = 0;
   }
 
   agua() {
-    console.log("Agua")
+    this.jogada = 3;
   }
 
   sairSala() {
+    this.backendService.exitSala(this.id, this.email).subscribe(
+      (data) => {
+        this.socketService.cancelSubscription("game-room-" + this.id)
+        this.socketService.cancelSubscription(this.email)
+        this.router.navigate(['/salas']);
+      },
+      (err) => {
+        console.log('erro: ', err)
+      }
+    )
     // Tenho que me desconectar do socket
-    this.router.navigate(['/main']);
   }
 
   enviaJogada() {
     // Depois de jogar eu desabilito o botão
+    if(this.jogada != -1){
+      this.backendService.playSala(this.id, this.email, this.jogada).subscribe(
+        (data) => {
+          console.log('jogada enviada');
+        },
+        (error) => {
+          console.log('error: ', error)
+        }
+      )
+    }
   }
 }
