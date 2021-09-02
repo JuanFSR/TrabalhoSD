@@ -15,6 +15,8 @@ import { TopBarComponent } from './components/top-bar/top-bar.component';
 import { SalaComponentListaComponent } from './components/sala-component-lista/sala-component-lista.component';
 import { AuthGuardService } from './guards/auth-guard.service';
 import { HttpClientModule } from '@angular/common/http';
+import { PageCriarSalaComponent } from './src/app/pages/page-criar-sala/page-criar-sala.component';
+import { PageCriaSalaComponent } from './pages/page-cria-sala/page-cria-sala.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { HttpClientModule } from '@angular/common/http';
     PageSalaJogandoComponent,
     TopBarComponent,
     SalaComponentListaComponent,
+    PageCriarSalaComponent,
+    PageCriaSalaComponent,
   ],
   imports: [
     ReactiveFormsModule,

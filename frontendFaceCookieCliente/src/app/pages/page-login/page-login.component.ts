@@ -27,7 +27,7 @@ export class PageLoginComponent implements OnInit {
 
   ) { 
     this.formLogin = this.formBuilder.group({
-      email: ['', [Validators.email, Validators.required]],
+      email: ['', [Validators.required]],
       username: ['', [Validators.required]],
     });
   }

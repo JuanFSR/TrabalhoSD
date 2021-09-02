@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateGameRoomResponseDto {
     
-	@JsonProperty("game-room")
-    GameRoom gameRoom;
+	@JsonProperty("id")
+    Long id;
 }
