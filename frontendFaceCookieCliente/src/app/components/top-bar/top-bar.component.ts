@@ -27,22 +27,8 @@ export class TopBarComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  newSala() {
-    
-  }
-  enviaNomeSala() {
-    let formObjeto = this.formSala.getRawValue();
-
-    this.backendService.createSala(formObjeto.nomeSala, this.authService.getEmail())
-    .subscribe(
-      (data) => {
-        this.authService.setId(data.id);
-        this.router.navigate(['/jogos']);
-      },
-      (err) => {
-        console.log('Ops, deu erro! ', err)
-      }
-    )
+  redireciona() {
+    this.router.navigate(['/create']);
   }
 
 

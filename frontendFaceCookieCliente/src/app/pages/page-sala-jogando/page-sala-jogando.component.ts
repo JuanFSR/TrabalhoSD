@@ -19,6 +19,8 @@ export class PageSalaJogandoComponent implements OnInit {
   qntdMax: number = 4;
   initGame: boolean = false;
   qntdJogadas: number = 0;
+  timeoutHelper: any;
+  haveSend: boolean = false;
 
   constructor(
     private router: Router,
@@ -39,7 +41,7 @@ export class PageSalaJogandoComponent implements OnInit {
         .subscribe((event: EventSocket<any>) => {
           this.qntdPlayers = ((event as unknown) as number);
           
-          console.log(this.qntdPlayers, this.qntdMax);
+          console.log('Qntd player: ', this.qntdPlayers, this.qntdMax);
           if(this.qntdPlayers == this.qntdMax){
             this.iniciarjogo();
           }
@@ -60,20 +62,52 @@ export class PageSalaJogandoComponent implements OnInit {
         .onEvent(EventTypes.Enum.JOGADOR_JOGOU)
         .subscribe((event: EventSocket<any>) => {
           this.qntdJogadas += 1;
+          
+          console.log('Qntd Jogadas: ', this.qntdJogadas, this.qntdMax-1)
+          if(this.qntdJogadas == this.qntdMax){
+            this.verificarGanhador()
+          }
         }) 
 
     this.socketService
         .onEvent(EventTypes.Enum.JOGO_INICIOU)
         .subscribe((event: EventSocket<any>) => {
           this.initGame = true;
+          this.timeoutHelper = setTimeout(() => {this.sairSala()}, 30 * 1000);
+        }) 
+
+    this.socketService
+        .onEvent(EventTypes.Enum.RESULTADO)
+        .subscribe((event: EventSocket<any>) => {
+          let result = ((event as unknown) as number);
+          clearTimeout(this.timeoutHelper);
+
+          if(result == 0){
+            console.log('empatou!');
+            this.socketService.cancelSubscription("game-room-" + this.id)
+            this.socketService.cancelSubscription(this.email)
+            this.router.navigate(['/salas']);
+
+          } else if (result == 1){
+            console.log('houve um vencedor!!');
+            this.socketService.cancelSubscription("game-room-" + this.id)
+            this.socketService.cancelSubscription(this.email)
+            this.router.navigate(['/salas']);
+          }
+
+        }) 
+
+    this.socketService
+        .onEvent(EventTypes.Enum.RESULTADO_EMAIL)
+        .subscribe((event: EventSocket<any>) => {
+          clearTimeout(this.timeoutHelper);
+          console.log('Você venceu!');
         }) 
 
   }
 
   verificarGanhador(){
-    if(this.qntdJogadas == this.qntdPlayers) {
-      this.backendService.resultSala(this.id).subscribe(() => {});
-    }
+    this.backendService.resultSala(this.id).subscribe(() => {});
   }
 
   fogo() {
@@ -116,9 +150,10 @@ export class PageSalaJogandoComponent implements OnInit {
 
   enviaJogada() {
     // Depois de jogar eu desabilito o botão
-    if(this.jogada != -1 && this.initGame){
+    if(this.jogada != -1 && this.initGame && !this.haveSend){
       this.backendService.playSala(this.id, this.email, this.jogada).subscribe(
         (data) => {
+          this.haveSend = true;
           console.log('jogada enviada');
         },
         (error) => {

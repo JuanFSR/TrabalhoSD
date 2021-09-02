@@ -5,7 +5,8 @@ export namespace EventTypes {
         JOGADOR_SAIU_SALA,
         JOGO_INICIOU,
         JOGADOR_JOGOU,
-        RESULTADO
+        RESULTADO,
+        RESULTADO_EMAIL
     }
 
 }   

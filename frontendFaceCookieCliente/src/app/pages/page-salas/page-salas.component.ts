@@ -5,7 +5,6 @@ import { EventSocket, EventTypes } from '@app/model/event.model';
 import { AuthService } from '@app/service/auth.service';
 import { BackendServiceService } from '@app/service/backend-service.service';
 import { SocketClientService } from '@app/service/socket-client.service';
-import Cookies from 'js-cookie';
 
 @Component({
   selector: 'app-page-salas',
@@ -26,10 +25,12 @@ export class PageSalasComponent implements OnInit {
 
     // crio a conexão
     socketService.connectSocket();
-
+  }
+  
+  ngOnInit(): void {
     setTimeout(() => {
       // escuto um canal
-      socketService.createSubscription("canal-geral");
+      this.socketService.createSubscription("canal-geral");
   
       // escuto apenas o tipo SALA_CRIADA
       this.socketService
@@ -38,9 +39,7 @@ export class PageSalasComponent implements OnInit {
           this.getSala();
         }) 
     }, 5 * 1000);
-  }
-  
-  ngOnInit(): void {
+
     this.email = this.authService.getEmail();
     
     this.getSala();
@@ -55,6 +54,7 @@ export class PageSalasComponent implements OnInit {
 
     this.serviceBackend.joinSala(id, this.email).subscribe(
       (data) => {
+        this.socketService.cancelSubscription("canal-geral");
         this.router.navigate(['/jogos']);
       },
       (err) => {
