@@ -1,5 +1,9 @@
  # spring.devtools.restart.enable=false
  spring:
+  
+  main:
+    banner-mode: console
+    log-startup-info: true
     
   devtools:
     restart:
